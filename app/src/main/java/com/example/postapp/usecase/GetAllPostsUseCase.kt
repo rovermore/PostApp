@@ -5,7 +5,8 @@ import com.example.postapp.repository.RepositoryImpl
 import javax.inject.Inject
 
 class GetAllPostsUseCase
-    @Inject constructor(private val repositoryImpl: RepositoryImpl): UseCase<List<Post>>{
-    override suspend fun request(): List<Post> =
+    @Inject constructor(private val repositoryImpl: RepositoryImpl): UseCase<List<Post>?>{
+
+    override suspend fun request(): List<Post>? =
         repositoryImpl.getAllPosts()
 }

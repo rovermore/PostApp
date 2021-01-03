@@ -11,14 +11,14 @@ interface RetrofitApiClient {
 
     @GET("posts")
     suspend fun getAllPosts()
-            : List<PostApiDTO>
+            : List<PostApiDTO>?
 
     @GET("posts/{id}")
-    suspend fun getPostById(@Path("id") id: Int): PostApiDTO
+    suspend fun getPostById(@Path("id") id: Int): PostApiDTO?
 
     @GET("users/{id}")
-    suspend fun getUserById(@Path("id") id: Int): UserApiDTO
+    suspend fun getUserById(@Path("id") id: Int): UserApiDTO?
 
     @GET("comments")
-    suspend fun getCommentsByPostId(@Query("postId")id: Int): List<CommentApiDTO>
+    suspend fun getCommentsByPostId(@Query("postId")id: Int): List<CommentApiDTO>?
 }

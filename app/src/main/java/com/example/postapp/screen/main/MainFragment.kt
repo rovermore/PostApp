@@ -27,15 +27,11 @@ class MainFragment : Fragment(), MainAdapter.OnItemClicked{
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    private var adapter = MainAdapter(null, this)
-    private lateinit var layoutManager: LinearLayoutManager
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-        layoutManager = LinearLayoutManager(requireContext())
         setupObservers()
         return binding.root
     }
@@ -54,7 +50,7 @@ class MainFragment : Fragment(), MainAdapter.OnItemClicked{
 
     private fun setupReloadButton() {
         binding.errorView.reloadButton.setOnClickListener {
-            adapter.clearMainAdapter()
+            mainViewModel.loadData()
         }
     }
 
@@ -69,15 +65,15 @@ class MainFragment : Fragment(), MainAdapter.OnItemClicked{
     }
 
     private fun setupUI() {
-        setUpRecyclerView()
         setupReloadButton()
     }
 
-    private fun setUpRecyclerView() {
+    private fun setUpRecyclerView(postList: List<Post>) {
+        val mainAdapter = MainAdapter(postList.toMutableList(), this)
         binding.mainRecycler.apply {
-            layoutManager = layoutManager
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
-            adapter = adapter
+            adapter = mainAdapter
         }
     }
 
@@ -86,14 +82,10 @@ class MainFragment : Fragment(), MainAdapter.OnItemClicked{
             ViewState.Error -> setErrorView()
             ViewState.Loading -> setLoadingView()
             is ViewState.Content<*> -> {
+                setUpRecyclerView(viewState.data as List<Post>)
                 setSuccessView()
-                updateAdapter(viewState.data as List<Post>)
             }
         }
-    }
-
-    private fun updateAdapter(postList: List<Post>) {
-        adapter.updatePostList(postList.toMutableList())
     }
 
     private fun setErrorView() {
@@ -102,21 +94,17 @@ class MainFragment : Fragment(), MainAdapter.OnItemClicked{
             progressBar.gone()
             errorView.apply {
                 errorImage.visible()
-                errorImage.bringToFront()
                 errorText.visible()
-                errorText.text = resources.getString(R.string.error_database)
-                errorText.bringToFront()
+                reloadButton.visible()
             }
         }
     }
 
     private fun setLoadingView() {
-        binding.apply {
-            progressBar.apply {
+        binding.progressBar.apply {
                 visible()
                 bringToFront()
             }
-        }
     }
 
     private fun setSuccessView() {

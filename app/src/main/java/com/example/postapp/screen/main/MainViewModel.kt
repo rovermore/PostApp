@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.postapp.usecase.GetAllPostsUseCase
 import com.example.postapp.utils.ViewState
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 class MainViewModel
@@ -21,23 +22,22 @@ class MainViewModel
         loadData()
     }
 
-    private fun loadData() {
+    fun loadData() {
         _viewState.value = ViewState.Loading
-        setupObservers()
-    }
-
-
-    private fun setupObservers() {
         observeResponse()
     }
 
     private fun observeResponse() {
         viewModelScope.launch {
-            val allPosts = getAllPostsUseCase.request()
-            if (!allPosts.isNullOrEmpty())
-                _viewState.value = ViewState.Content(allPosts)
-            else
+            try {
+                val allPosts = getAllPostsUseCase.request()
+                if (!allPosts.isNullOrEmpty())
+                    _viewState.value = ViewState.Content(allPosts)
+                else
+                    _viewState.value = ViewState.Error
+            } catch (e: Exception) {
                 _viewState.value = ViewState.Error
+            }
         }
     }
 }

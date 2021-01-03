@@ -8,19 +8,19 @@ import javax.inject.Inject
 class RetrofitApiClientImpl
     @Inject constructor(private val retrofitApiClient: RetrofitApiClient):
     RetrofitApiClient {
-    override suspend fun getAllPosts(): List<PostApiDTO> {
+    override suspend fun getAllPosts(): List<PostApiDTO>? {
         return retrofitApiClient.getAllPosts()
     }
 
-    override suspend fun getPostById(id: Int): PostApiDTO {
+    override suspend fun getPostById(id: Int): PostApiDTO? {
         return retrofitApiClient.getPostById(id)
     }
 
-    override suspend fun getUserById(id: Int): UserApiDTO {
+    override suspend fun getUserById(id: Int): UserApiDTO? {
         return retrofitApiClient.getUserById(id)
     }
 
-    override suspend fun getCommentsByPostId(id: Int): List<CommentApiDTO> {
+    override suspend fun getCommentsByPostId(id: Int): List<CommentApiDTO>? {
         return retrofitApiClient.getCommentsByPostId(id)
     }
 

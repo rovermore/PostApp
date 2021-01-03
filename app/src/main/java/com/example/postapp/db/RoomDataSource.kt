@@ -14,7 +14,7 @@ class RoomDataSource @Inject constructor(context: Context): LocalDataSource {
         return db.postDAO.getAll().map { postLocalDTO ->  postLocalDTO.toPost() }
     }
 
-    override suspend fun getPostById(postId: Int): Post {
+    override suspend fun getPostById(postId: Int): Post? {
         return db.postDAO.getPostById(postId).toPost()
     }
 
@@ -30,8 +30,8 @@ class RoomDataSource @Inject constructor(context: Context): LocalDataSource {
         db.commentDAO.insertComment(comment.toCommentLocalDTO())
     }
 
-    override suspend fun getUserById(userId: Int): User {
-        return db.userDAO.getUserById(userId).toUser()
+    override suspend fun getUserById(userId: Int): User? {
+        return db.userDAO.getUserById(userId)?.toUser()
     }
 
     override suspend fun insertUser(user: User) {

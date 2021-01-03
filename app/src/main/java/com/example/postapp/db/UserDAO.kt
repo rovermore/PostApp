@@ -10,7 +10,7 @@ import com.example.postapp.model.local.UserLocalDTO
 interface UserDAO {
 
     @Query("SELECT * FROM UserLocalDTO WHERE id = :userId")
-    suspend fun getUserById(userId: Int): UserLocalDTO
+    suspend fun getUserById(userId: Int): UserLocalDTO?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserLocalDTO)

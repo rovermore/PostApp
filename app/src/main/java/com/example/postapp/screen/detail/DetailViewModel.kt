@@ -23,10 +23,6 @@ class DetailViewModel
 
     private fun loadData(postId: Int) {
         _viewState.value = ViewState.Loading
-        setupObservers(postId)
-    }
-
-    private fun setupObservers(postId: Int) {
         observeResponse(postId)
     }
 
@@ -34,11 +30,13 @@ class DetailViewModel
         viewModelScope.launch {
             try {
                 val postDetail = getPostDetailsUseCase.requestWithParameter(postId)
-                _viewState.value = ViewState.Content(postDetail)
+                if (postDetail != null)
+                    _viewState.value = ViewState.Content(postDetail)
+                else
+                    _viewState.value = ViewState.Error
             } catch (e: Exception) {
                 _viewState.value = ViewState.Error
             }
         }
     }
-
 }

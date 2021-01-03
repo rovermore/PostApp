@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.postapp.PostApp
 import com.example.postapp.databinding.FragmentDetailBinding
@@ -14,8 +13,6 @@ import com.example.postapp.model.canon.PostDetail
 import com.example.postapp.utils.ViewState
 import com.example.postapp.utils.gone
 import com.example.postapp.utils.visible
-import kotlinx.android.synthetic.main.error_view.*
-import kotlinx.android.synthetic.main.fragment_main.*
 import javax.inject.Inject
 
 
@@ -27,22 +24,19 @@ class DetailFragment : Fragment() {
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
-    private var adapter = CommentAdapter(null)
-    private lateinit var layoutManager: LinearLayoutManager
+    var postId: Int? = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
-        layoutManager = LinearLayoutManager(context)
         val bundle = arguments
-        val postId = bundle?.getString("postId")
-        postId?.let { detailViewModel.initialize(it.toInt()) }
+        postId = bundle?.getInt("postId")
+        postId?.let { detailViewModel.initialize(it) }
         setupObservers()
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,7 +53,11 @@ class DetailFragment : Fragment() {
     }
 
     private fun setupReloadButton() {
-        //binding.reloadButton.setOnClickListener { detailViewModel.loadData() }
+        postId?.let {
+            binding.detailErrorView.reloadButton.setOnClickListener {
+                detailViewModel.initialize(postId!!)
+            }
+        }
     }
 
     private fun setupObservers() {
@@ -73,16 +71,19 @@ class DetailFragment : Fragment() {
     }
 
     private fun setupUI() {
-        setUpRecyclerView()
         setupReloadButton()
     }
 
-    private fun setUpRecyclerView() {
-        binding.commentsRecycler.apply {
-            visibility = View.GONE
-            layoutManager = layoutManager
-            setHasFixedSize(true)
-            adapter = adapter
+    private fun setupView(postDetail: PostDetail) {
+        binding.apply {
+            titleTextView.text = postDetail.title
+            userTextView.text = postDetail.user
+            bodyTextView.text = postDetail.body
+            commentsRecycler.apply {
+                layoutManager = LinearLayoutManager(context)
+                setHasFixedSize(true)
+                adapter = CommentAdapter(postDetail.commentList?.toMutableList())
+            }
         }
     }
 
@@ -91,20 +92,16 @@ class DetailFragment : Fragment() {
             ViewState.Error -> setErrorView()
             ViewState.Loading -> setLoadingView()
             is ViewState.Content<*> -> {
+                setupView(it.data as PostDetail)
                 setSuccessView()
-                updateAdapter(it.data as PostDetail)
             }
         }
     }
 
-    private fun updateAdapter(postDetail: PostDetail) {
-        adapter.updateCommentList(postDetail.commentList.toMutableList())
-    }
-
     private fun setErrorView() {
         binding.apply {
-            progressBar.gone()
-            errorView.apply {
+            detailProgressBar.gone()
+            detailErrorView.apply {
                 errorImage.visible()
                 errorText.visible()
                 reloadButton.visible()
@@ -114,7 +111,7 @@ class DetailFragment : Fragment() {
 
     private fun setLoadingView() {
         binding.apply {
-            progressBar.apply {
+            detailProgressBar.apply {
                 visible()
                 bringToFront()
             }
@@ -123,9 +120,9 @@ class DetailFragment : Fragment() {
 
     private fun setSuccessView() {
         binding.apply {
-            progressBar.gone()
+            detailProgressBar.gone()
             commentsRecycler.visible()
+            commentTV.visible()
         }
     }
-
 }

@@ -6,11 +6,11 @@ import com.example.postapp.model.canon.User
 
 interface ApiDataSource {
 
-    suspend fun getAllPosts(): List<Post>
-    suspend fun getPostById(id: Int): Post
+    suspend fun getAllPosts(): List<Post>?
+    suspend fun getPostById(id: Int): Post?
 
-    suspend fun getUserById(id: Int): User
+    suspend fun getUserById(id: Int): User?
 
-    suspend fun getCommentsByPostId(id: Int): List<Comment>
+    suspend fun getCommentsByPostId(id: Int): List<Comment>?
 
 }

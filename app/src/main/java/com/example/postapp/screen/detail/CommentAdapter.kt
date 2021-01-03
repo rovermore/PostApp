@@ -27,11 +27,6 @@ class CommentAdapter(var commentList: MutableList<Comment>?)
         }
     }
 
-    fun updateCommentList(commentList: MutableList<Comment>?){
-        this.commentList = commentList
-        notifyDataSetChanged()
-    }
-
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val binding  = CommentItemBinding.bind(view)
@@ -39,6 +34,7 @@ class CommentAdapter(var commentList: MutableList<Comment>?)
 
         fun bindView(comment: Comment) {
             binding.apply {
+                commentNameItemBodyTV.text = comment.name
                 commentItemBodyTV.text = comment.body
             }
         }

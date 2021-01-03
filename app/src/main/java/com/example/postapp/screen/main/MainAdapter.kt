@@ -34,19 +34,6 @@ class MainAdapter (var postList: MutableList<Post>?,
         }
     }
 
-    fun updatePostList(championTeamList: MutableList<Post>?){
-        this.postList = championTeamList
-        notifyDataSetChanged()
-    }
-
-    fun clearMainAdapter() {
-        postList?.run {
-            postList!!.clear()
-            postList = null
-            notifyDataSetChanged()
-        }
-    }
-
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private val binding  = PostItemBinding.bind(view)
