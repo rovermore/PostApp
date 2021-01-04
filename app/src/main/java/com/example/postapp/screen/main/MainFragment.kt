@@ -77,12 +77,12 @@ class MainFragment : Fragment(), MainAdapter.OnItemClicked{
         }
     }
 
-    private fun updateUI(viewState: ViewState) {
+    private fun updateUI(viewState: ViewState<List<Post>>) {
         when (viewState) {
             ViewState.Error -> setErrorView()
             ViewState.Loading -> setLoadingView()
-            is ViewState.Content<*> -> {
-                setUpRecyclerView(viewState.data as List<Post>)
+            is ViewState.Content -> {
+                setUpRecyclerView(viewState.data)
                 setSuccessView()
             }
         }
@@ -92,24 +92,22 @@ class MainFragment : Fragment(), MainAdapter.OnItemClicked{
         binding.apply {
             mainRecycler.gone()
             progressBar.gone()
-            errorView.apply {
-                errorImage.visible()
-                errorText.visible()
-                reloadButton.visible()
-            }
+            errorView.root.visible()
         }
     }
 
     private fun setLoadingView() {
-        binding.progressBar.apply {
-                visible()
-                bringToFront()
-            }
+        binding.apply {
+            errorView.root.gone()
+            mainRecycler.gone()
+            progressBar.visible()
+        }
     }
 
     private fun setSuccessView() {
         binding.apply {
             progressBar.gone()
+            errorView.root.gone()
             mainRecycler.visible()
         }
     }

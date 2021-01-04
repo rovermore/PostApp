@@ -87,12 +87,12 @@ class DetailFragment : Fragment() {
         }
     }
 
-    private fun updateUI(it: ViewState?) {
+    private fun updateUI(it: ViewState<PostDetail>?) {
         when (it) {
             ViewState.Error -> setErrorView()
             ViewState.Loading -> setLoadingView()
-            is ViewState.Content<*> -> {
-                setupView(it.data as PostDetail)
+            is ViewState.Content -> {
+                setupView(it.data)
                 setSuccessView()
             }
         }
@@ -101,28 +101,24 @@ class DetailFragment : Fragment() {
     private fun setErrorView() {
         binding.apply {
             detailProgressBar.gone()
-            detailErrorView.apply {
-                errorImage.visible()
-                errorText.visible()
-                reloadButton.visible()
-            }
+            detailContent.gone()
+            detailErrorView.root.visible()
         }
     }
 
     private fun setLoadingView() {
         binding.apply {
-            detailProgressBar.apply {
-                visible()
-                bringToFront()
-            }
+            detailErrorView.root.gone()
+            detailContent.gone()
+            detailProgressBar.visible()
         }
     }
 
     private fun setSuccessView() {
         binding.apply {
             detailProgressBar.gone()
-            commentsRecycler.visible()
-            commentTV.visible()
+            detailErrorView.root.gone()
+            detailContent.visible()
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.postapp.model.canon.PostDetail
 import com.example.postapp.usecase.GetPostDetailsUseCase
 import com.example.postapp.utils.ViewState
 import kotlinx.coroutines.launch
@@ -13,8 +14,8 @@ import javax.inject.Inject
 class DetailViewModel
     @Inject constructor(private val getPostDetailsUseCase: GetPostDetailsUseCase) : ViewModel() {
 
-    private val _viewState = MutableLiveData<ViewState>()
-    val viewState: LiveData<ViewState>
+    private val _viewState = MutableLiveData<ViewState<PostDetail>>()
+    val viewState: LiveData<ViewState<PostDetail>>
         get() = _viewState
 
     fun initialize(postId: Int) {

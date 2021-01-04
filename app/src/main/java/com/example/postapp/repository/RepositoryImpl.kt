@@ -19,12 +19,16 @@ class RepositoryImpl @Inject constructor(private val retrofitDataSource: Retrofi
             postsFromDataBase
         } else {
             val posts = retrofitDataSource.getAllPosts()
-            posts?.let {
-                for (post in posts) {
-                    roomDataSource.savePost(post)
-                }
-            }
+            saveAllPosts(posts)
             posts
+        }
+    }
+
+    private suspend fun saveAllPosts(posts: List<Post>?) {
+        posts?.let {
+            for (post in posts) {
+                roomDataSource.savePost(post)
+            }
         }
     }
 
@@ -34,9 +38,14 @@ class RepositoryImpl @Inject constructor(private val retrofitDataSource: Retrofi
             postFromDataBase
         } else {
             val post = retrofitDataSource.getPostById(id)
-            post?.let { roomDataSource.savePost(post) }
+            savePost(post)
             post
         }
+    }
+
+    private suspend fun savePost(post: Post?){
+        post?.let { roomDataSource.savePost(post) }
+
     }
 
     override suspend fun getCommentsFromPostId(id: Int): List<Comment>? {
@@ -45,12 +54,16 @@ class RepositoryImpl @Inject constructor(private val retrofitDataSource: Retrofi
             commentListFromDB
         } else {
             val comments = retrofitDataSource.getCommentsByPostId(id)
-            comments?.let {
-                for (comment in comments) {
-                    roomDataSource.saveComment(comment)
-                }
-            }
+            saveAllComments(comments)
             comments
+        }
+    }
+
+    private suspend fun saveAllComments(comments: List<Comment>?) {
+        comments?.let {
+            for (comment in comments) {
+                roomDataSource.saveComment(comment)
+            }
         }
     }
 
@@ -61,10 +74,14 @@ class RepositoryImpl @Inject constructor(private val retrofitDataSource: Retrofi
                 userFromDB
             } else {
                 val user = retrofitDataSource.getUserById(id)
-                user?.let { roomDataSource.insertUser(user) }
+                saveUser(user)
                 user
             }
         }
         return null
+    }
+
+    private suspend fun saveUser(user: User?) {
+        user?.let { roomDataSource.insertUser(user) }
     }
 }
